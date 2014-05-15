@@ -5,6 +5,7 @@ use warnings;
 use File::Share 'dist_dir';
 use Cwd 'abs_path';
 use Path::Maker;
+use File::pushd 'pushd';
 
 our $VERSION = "0.01";
 
@@ -36,9 +37,6 @@ sub create {
     die "ERROR missing pm name\n" unless $pm;
     my $dist = pm_to_dist($pm);
     my $path = pm_to_path($pm);
-    die "ERROR already exists $dist\n" if -e $dist;
-    mkdir $dist or die "ERROR failed to create $dist: $!\n";
-    chdir $dist;
 
     my %arg = (
         author_name  => $self->git_config('user.name'),
@@ -48,18 +46,24 @@ sub create {
         dist_name    => $dist,
         today        => scalar(localtime),
     );
-    my %file = (
-        'Changes'      => 'Changes',
-        '_gitignore'   => '.gitignore',
-        'Module.pm'    => "lib/$path",
-        '00_compile.t' => 't/00_compile.t',
-        'cpanfile'     => 'cpanfile',
-        'Daikufile'    => 'Daikufile',
-        'Makefile.PL'  => 'Makefile.PL',
-    );
-    for my $from (sort keys %file) {
-        warn "-> Writing $file{$from}\n";
-        $self->{maker}->render_to_file($from => $file{$from}, \%arg);
+
+    die "ERROR already exists $dist\n" if -e $dist;
+    mkdir $dist or die "ERROR failed to create $dist: $!\n";
+    {
+        my $guard = pushd $dist;
+        my %file = (
+            'Changes'      => 'Changes',
+            '_gitignore'   => '.gitignore',
+            'Module.pm'    => "lib/$path",
+            '00_compile.t' => 't/00_compile.t',
+            'cpanfile'     => 'cpanfile',
+            'Daikufile'    => 'Daikufile',
+            'Makefile.PL'  => 'Makefile.PL',
+        );
+        for my $from (sort keys %file) {
+            warn "-> Writing $file{$from}\n";
+            $self->{maker}->render_to_file($from => $file{$from}, \%arg);
+        }
     }
 }
 

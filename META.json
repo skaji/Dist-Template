@@ -46,12 +46,15 @@
          "requires" : {
             "Daiku" : "0",
             "File::Share" : "0",
+            "File::pushd" : "0",
+            "Path::Maker" : "0",
             "Pod::Markdown" : "2.001",
             "perl" : "5.008005"
          }
       },
       "test" : {
          "requires" : {
+            "File::Which" : "0",
             "Test::More" : "0.98"
          }
       }
