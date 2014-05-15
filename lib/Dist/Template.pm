@@ -117,7 +117,7 @@ Dist::Template - create cpan module templates
 
 Dist::Template creates cpan module templates.
 It generates Daikufile too, thus
-you can develop your module with `daiku` command!
+you can develop your module with C<daiku> command.
 
 =head1 LICENSE
 
