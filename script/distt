@@ -1,0 +1,24 @@
+#!perl
+use strict;
+use warnings;
+use utf8;
+use Dist::Template;
+Dist::Template->new->create(@ARGV);
+
+__END__
+
+=head1 SYNOPSIS
+
+    $ distt My::Module
+    -> Writing t/00_compile.t
+    -> Writing Changes
+    -> Writing Daikufile
+    -> Writing Makefile.PL
+    -> Writing lib/zzz4.pm
+    -> Writing .gitignore
+    -> Writing cpanfile
+
+    $ cd My-Module
+    $ daiku
+
+=cut

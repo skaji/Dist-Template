@@ -1,0 +1,8 @@
+requires 'perl', '5.008005';
+
+on develop => sub {
+    requires 'Daiku';
+};
+on test => sub {
+    requires 'Test::More', '0.98';
+};
