@@ -104,7 +104,7 @@ Dist::Template - create cpan module templates
     -> Writing Changes
     -> Writing Daikufile
     -> Writing Makefile.PL
-    -> Writing lib/zzz4.pm
+    -> Writing lib/My/Module.pm
     -> Writing .gitignore
     -> Writing cpanfile
 
