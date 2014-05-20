@@ -124,7 +124,7 @@ Daikufile helps that.
 
 =head1 SEE ALSO
 
-C<Daiku>
+L<Daiku>
 
 =head1 LICENSE
 

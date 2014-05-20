@@ -30,7 +30,7 @@ Daikufile helps that.
 
 # SEE ALSO
 
-`Daiku`
+[Daiku](https://metacpan.org/pod/Daiku)
 
 # LICENSE
 
