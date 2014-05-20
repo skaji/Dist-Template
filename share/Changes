@@ -1,5 +1,0 @@
-Revision history for <?= $arg->{module_name} ?>
-
-0.01  <?= $arg->{today} ?>
-
-    initial version
