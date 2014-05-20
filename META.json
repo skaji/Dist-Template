@@ -45,7 +45,6 @@
       "runtime" : {
          "requires" : {
             "Daiku" : "0",
-            "File::Share" : "0",
             "File::pushd" : "0",
             "Path::Maker" : "0",
             "Pod::Markdown" : "2.001",

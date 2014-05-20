@@ -4,29 +4,33 @@ Dist::Template - create cpan module templates
 
 # SYNOPSIS
 
-    $ distt My::Module
-    -> Writing t/00_compile.t
-    -> Writing Changes
-    -> Writing Daikufile
-    -> Writing Makefile.PL
-    -> Writing lib/My/Module.pm
-    -> Writing .gitignore
-    -> Writing cpanfile
+    $ distt Hello::World
+    $ cd Hello-World
+    $ ls -F
+    Changes  Daikufile  Makefile.PL  cpanfile  lib/  t/
 
-    $ cd My-Module
-    $ daiku -T
-    daiku all    # (this is default) test, regen, clean
+    $ daiku --tasks
+    daiku all    # (this is default) test, regen
     daiku test   # run test cases
     daiku clean  # cleanup
     daiku regen  # regenerate README.md and META.json
 
-    $ daiku
-
 # DESCRIPTION
 
 Dist::Template creates cpan module templates.
-It generates Daikufile too, thus
-you can develop your module with `daiku` command.
+
+# WHY NEW?
+
+Dist::Template prepares Daikufile,
+which is similar to ruby's Rakefile.
+When I develop cpan modules, I sometimes want to
+define custom commands. For example,
+fatpack, CI specific commands.
+Daikufile helps that.
+
+# SEE ALSO
+
+`Daiku`
 
 # LICENSE
 

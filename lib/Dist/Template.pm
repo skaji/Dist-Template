@@ -2,10 +2,9 @@ package Dist::Template;
 use 5.008005;
 use strict;
 use warnings;
-use File::Share 'dist_dir';
-use Cwd 'abs_path';
-use Path::Maker;
+use Dist::Template::Share;
 use File::pushd 'pushd';
+use Path::Maker;
 
 our $VERSION = "0.01";
 
@@ -25,9 +24,8 @@ sub path_to_pm {
 
 sub new {
     my $class = shift;
-    my $dir = abs_path dist_dir(pm_to_dist(__PACKAGE__));
     my $maker = Path::Maker->new(
-        template_dir => $dir,
+        package => "Dist::Template::Share",
         template_header => "? my \$arg = shift;\n",
     );
     bless { maker => $maker }, $class;
@@ -47,7 +45,8 @@ sub create {
         today        => scalar(localtime),
     );
 
-    die "ERROR already exists $dist\n" if -e $dist;
+    die "ERROR already exists $dist.\n" if -e $dist;
+    warn "-> mkdir $dist\n";
     mkdir $dist or die "ERROR failed to create $dist: $!\n";
     {
         my $guard = pushd $dist;
@@ -61,7 +60,7 @@ sub create {
             'Makefile.PL'  => 'Makefile.PL',
         );
         for my $from (sort keys %file) {
-            warn "-> Writing $file{$from}\n";
+            warn "-> writing $dist/$file{$from}\n";
             $self->{maker}->render_to_file($from => $file{$from}, \%arg);
         }
     }
@@ -99,29 +98,33 @@ Dist::Template - create cpan module templates
 
 =head1 SYNOPSIS
 
-    $ distt My::Module
-    -> Writing t/00_compile.t
-    -> Writing Changes
-    -> Writing Daikufile
-    -> Writing Makefile.PL
-    -> Writing lib/My/Module.pm
-    -> Writing .gitignore
-    -> Writing cpanfile
+    $ distt Hello::World
+    $ cd Hello-World
+    $ ls -F
+    Changes  Daikufile  Makefile.PL  cpanfile  lib/  t/
 
-    $ cd My-Module
-    $ daiku -T
-    daiku all    # (this is default) test, regen, clean
+    $ daiku --tasks
+    daiku all    # (this is default) test, regen
     daiku test   # run test cases
     daiku clean  # cleanup
     daiku regen  # regenerate README.md and META.json
 
-    $ daiku
-
 =head1 DESCRIPTION
 
 Dist::Template creates cpan module templates.
-It generates Daikufile too, thus
-you can develop your module with C<daiku> command.
+
+=head1 WHY NEW?
+
+Dist::Template prepares Daikufile,
+which is similar to ruby's Rakefile.
+When I develop cpan modules, I sometimes want to
+define custom commands. For example,
+fatpack, CI specific commands.
+Daikufile helps that.
+
+=head1 SEE ALSO
+
+C<Daiku>
 
 =head1 LICENSE
 
