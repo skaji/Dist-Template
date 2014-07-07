@@ -1,6 +1,6 @@
-Revision history for Perl extension Dist-Template
+Revision history for Dist::Template
 
-{{$NEXT}}
+0.01  2014-07-08T02:31+09:00
 
-    - original version
+    initial version
 

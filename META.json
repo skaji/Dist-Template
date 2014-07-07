@@ -4,7 +4,7 @@
       "Shoichi Kaji <skaji@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "Minilla/v2.1.1, CPAN::Meta::Converter version 2.140640",
+   "generated_by" : "ExtUtils::MakeMaker version 6.98, CPAN::Meta::Converter version 2.140640",
    "license" : [
       "perl_5"
    ],
@@ -16,59 +16,21 @@
    "no_index" : {
       "directory" : [
          "t",
-         "xt",
-         "inc",
-         "share",
-         "eg",
-         "examples",
-         "author",
-         "builder"
+         "inc"
       ]
    },
    "prereqs" : {
-      "configure" : {
-         "requires" : {
-            "Module::Build" : "0.38"
-         }
-      },
-      "develop" : {
-         "requires" : {
-            "Test::CPAN::Meta" : "0",
-            "Test::MinimumVersion::Fast" : "0.04",
-            "Test::PAUSE::Permissions" : "0.04",
-            "Test::Pod" : "1.41",
-            "Test::Spellunker" : "v0.2.7"
-         }
-      },
       "runtime" : {
          "requires" : {
-            "CPAN::Meta" : "0",
-            "Daiku" : "0",
-            "File::pushd" : "0",
-            "Module::CPANfile" : "0",
-            "Path::Maker" : "0",
-            "Pod::Markdown" : "2.001",
             "perl" : "5.008005"
          }
       },
       "test" : {
          "requires" : {
-            "File::Which" : "0",
             "Test::More" : "0.98"
          }
       }
    },
-   "release_status" : "unstable",
-   "resources" : {
-      "bugtracker" : {
-         "web" : "https://github.com/shoichikaji/Dist-Template/issues"
-      },
-      "homepage" : "https://github.com/shoichikaji/Dist-Template",
-      "repository" : {
-         "type" : "git",
-         "url" : "git://github.com/shoichikaji/Dist-Template.git",
-         "web" : "https://github.com/shoichikaji/Dist-Template"
-      }
-   },
+   "release_status" : "stable",
    "version" : "0.01"
 }
