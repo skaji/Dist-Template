@@ -8,6 +8,9 @@ use Config;
 use Daiku;
 use Module::CPANfile;
 use Pod::Markdown;
+use Pod::Escapes;
+require ExtUtils::MM_Unix;
+require Dist::Template;
 
 sub slurp {
     open my $fh, "<:utf8", $_[0] or die "open $_[0]: $!\n";
@@ -86,21 +89,76 @@ sub import {
     };
 
 
-    file 'META.json' => ['Makefile', 'cpanfile', $module_path] => sub {
-        sh $MAKE, "metafile";
-        my ($dir) = grep -d, glob "$dist_name-*";
-
-        my $meta = CPAN::Meta->load_file("$dir/META.json");
+    file 'META.json' => ['cpanfile', $module_path] => sub {
+        my $mm = bless { DISTNAME => $dist_name }, 'ExtUtils::MM_Unix';
+        my $abstract = $mm->parse_abstract($module_path);
+        my $version  = $mm->parse_version($module_path);
         my $prereqs = Module::CPANfile->load("cpanfile")
             ->prereqs->as_string_hash;
+        my $authors = _build_authors($module_path);
 
-        CPAN::Meta->new({
-            %{$meta->as_struct},
+        my $spec = {
+            "meta-spec" => {
+                version => 2,
+                url => "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
+            },
+            license => ["perl_5"],
+            abstract => $abstract,
             dynamic_config => 0,
-            prereqs => $prereqs
-        })->save("META.json");
+            version => $version,
+            name => $dist_name,
+            prereqs => $prereqs,
+            generated_by => "Dist::Template/$Dist::Template::VERSION",
+            release_status => "unstable",
+            no_index => { directory => [qw(t xt inc eg example author)] },
+            author => $authors,
+        };
 
+        CPAN::Meta->new($spec)->save("META.json");
     };
 }
+
+# taken from Minilla::Metadata
+sub _build_authors {
+    my $path = shift;
+    my $content = do {
+        open my $fh, "<:utf8", $path or die "open $path: $!\n";
+        local $/; <$fh>;
+    };
+
+    if ($content =~ m/
+        =head \d \s+ (?:authors?)\b \s*
+        ([^\n]*)
+        |
+        =head \d \s+ (?:licen[cs]e|licensing|copyright|legal)\b \s*
+        .*? copyright .*? \d\d\d[\d.]+ \s* (?:\bby\b)? \s*
+        ([^\n]*)
+    /ixms) {
+        my $author = $1 || $2;
+
+        $author =~ s{ E<( (\d+) | ([A-Za-z]+) )> }{
+            defined $2
+            ? chr($2)
+            : defined $Pod::Escapes::Name2character_number{$1}
+            ? chr($Pod::Escapes::Name2character_number{$1})
+            : do {
+                warn "Unknown escape: E<$1>";
+                "E<$1>";
+            };
+        }gex;
+
+        my @authors;
+        for (split /\n/, $author) {
+            chomp;
+            next unless /\S/;
+            push @authors, $_;
+        }
+        return \@authors;
+    } else {
+        warn "Cannot determine author info from $path\n";
+        return undef;
+    }
+}
+
 
 1;

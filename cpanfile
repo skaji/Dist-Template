@@ -5,6 +5,7 @@ requires 'Path::Maker';
 requires 'File::pushd';
 requires 'Module::CPANfile';
 requires 'CPAN::Meta';
+requires 'Pod::Escapes';
 
 on 'test' => sub {
     requires 'Test::More', '0.98';
