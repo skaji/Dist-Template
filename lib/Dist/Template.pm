@@ -5,6 +5,7 @@ use warnings;
 use Dist::Template::Share;
 use File::pushd 'pushd';
 use Path::Maker;
+use POSIX qw(strftime);
 
 our $VERSION = "0.01";
 
@@ -20,6 +21,16 @@ sub path_to_pm {
     local $_ = shift;
     s{^lib/}{}; s{/}{::}g; s{\.pm$}{}; $_;
 };
+sub today {
+    my $offset = do {
+        if (strftime("%z", localtime) =~ /^([+-])(\d{2})(\d{2})$/) {
+            "$1$2:$3";
+        } else {
+            die "failed to parse offset from UTC\n";
+        }
+    };
+    strftime("%Y-%m-%dT%H:%M", localtime) . $offset;
+}
 
 
 sub new {
@@ -42,7 +53,7 @@ sub create {
         module_name  => $pm,
         module_path  => $path,
         dist_name    => $dist,
-        today        => scalar(localtime),
+        today        => today(),
     );
 
     die "ERROR already exists $dist.\n" if -e $dist;
@@ -55,6 +66,7 @@ sub create {
             '_gitignore'   => '.gitignore',
             'Module.pm'    => "lib/$path",
             '00_compile.t' => 't/00_compile.t',
+            '01_basic.t'   => 't/01_basic.t',
             'cpanfile'     => 'cpanfile',
             'Daikufile'    => 'Daikufile',
             'Makefile.PL'  => 'Makefile.PL',

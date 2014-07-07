@@ -31,9 +31,17 @@ sub dist_name {
 
 my $MAKE = $Config{make};
 sub import {
-    (undef, my $module) = @_;
+    shift;
+    my ($module, %hash);
+    if (@_ == 1) {
+        $module = shift;
+    } else {
+        %hash = @_;
+        $module = $hash{module} or die "Missing module option";
+    }
     my $module_path = module_path($module);
     my $dist_name   = dist_name($module);
+    my $readme      = $hash{readme} || $module_path;
 
     my $caller = caller;
 
@@ -60,6 +68,7 @@ sub import {
     desc "cleanup";
     task clean => 'Makefile' => sub {
         sh $MAKE, 'realclean';
+        sh "rm", "-rf", @{$hash{clean}} if $hash{clean};
     };
 
     desc "regenerate README.md and META.json";
@@ -69,10 +78,10 @@ sub import {
         sh $^X, "Makefile.PL";
     };
 
-    file 'README.md' => $module_path => sub {
+    file 'README.md' => $readme => sub {
         my $p = Pod::Markdown->new;
         $p->output_string(\my $markdown);
-        $p->parse_string_document(slurp $module_path);
+        $p->parse_string_document(slurp $readme);
         spew "README.md", $markdown;
     };
 

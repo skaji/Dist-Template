@@ -13,11 +13,23 @@ my @module;
 find sub {
     local $_ = $File::Find::name;
     return unless s{\.pm$}{};
-    s{^lib/}{}; s{/}{::};
+    s{^lib/}{}; s{/}{::}g;
     push @module, $_;
 }, "lib";
 
 use_ok $_ for @module;
+ok system($^X, "-wc", $_) == 0 for glob "bin/* script/*";
+
+done_testing;
+
+@@ 01_basic.t
+use strict;
+use warnings;
+use utf8;
+use Test::More;
+use <?= $arg->{module_name} ?>;
+
+pass "todo";
 
 done_testing;
 
@@ -31,6 +43,9 @@ done_testing;
 /Makefile
 /blib
 /pm_to_blib
+/MANIFEST
+/local
+/cpanfile.snapshot
 
 @@ Changes
 Revision history for <?= $arg->{module_name} ?>
@@ -54,7 +69,6 @@ use strict;
 use warnings;
 use ExtUtils::MakeMaker;
 use File::Copy 'copy';
-copy 'META.json' => 'MYMETA.json' if -f 'META.json';
 
 WriteMakefile
     NAME => '<?= $arg->{module_name} ?>',
@@ -62,9 +76,11 @@ WriteMakefile
     ABSTRACT_FROM => 'lib/<?= $arg->{module_path} ?>',
     AUTHOR => ['<?= $arg->{author_name} ?> <<?= $arg->{author_email} ?>>'],
     LICENSE => 'perl',
-    EXE_FILES => [],
+    EXE_FILES => [glob "bin/* script/*"],
     NO_MYMETA => 1,
 ;
+
+copy 'META.json' => 'MYMETA.json' if -f 'META.json';
 
 @@ Module.pm
 package <?= $arg->{module_name} ?>;
@@ -72,7 +88,7 @@ use strict;
 use warnings;
 use utf8;
 
-our $VERSION = '0.001';
+our $VERSION = '0.01';
 
 
 1;
