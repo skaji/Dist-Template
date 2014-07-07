@@ -22,11 +22,18 @@
    "prereqs" : {
       "runtime" : {
          "requires" : {
-            "perl" : "5.008005"
+            "CPAN::Meta" : "0",
+            "Daiku" : "0",
+            "File::pushd" : "0",
+            "Module::CPANfile" : "0",
+            "Path::Maker" : "0",
+            "Pod::Markdown" : "2.001",
+            "perl" : "5.008001"
          }
       },
       "test" : {
          "requires" : {
+            "File::Which" : "0",
             "Test::More" : "0.98"
          }
       }
