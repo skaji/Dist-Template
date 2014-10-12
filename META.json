@@ -4,19 +4,23 @@
       "Shoichi Kaji <skaji@cpan.org>"
    ],
    "dynamic_config" : 0,
-   "generated_by" : "ExtUtils::MakeMaker version 6.98, CPAN::Meta::Converter version 2.140640",
+   "generated_by" : "Dist::Template/0.01",
    "license" : [
       "perl_5"
    ],
    "meta-spec" : {
       "url" : "http://search.cpan.org/perldoc?CPAN::Meta::Spec",
-      "version" : "2"
+      "version" : 2
    },
    "name" : "Dist-Template",
    "no_index" : {
       "directory" : [
          "t",
-         "inc"
+         "xt",
+         "inc",
+         "eg",
+         "example",
+         "author"
       ]
    },
    "prereqs" : {
@@ -26,7 +30,7 @@
             "Daiku" : "0",
             "File::pushd" : "0",
             "Module::CPANfile" : "0",
-            "Path::Maker" : "0",
+            "Path::Maker" : "0.004",
             "Pod::Escapes" : "0",
             "Pod::Markdown" : "2.001",
             "perl" : "5.008001"
@@ -39,6 +43,6 @@
          }
       }
    },
-   "release_status" : "stable",
+   "release_status" : "unstable",
    "version" : "0.01"
 }

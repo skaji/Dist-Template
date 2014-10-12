@@ -46,6 +46,10 @@ sub import {
     my $dist_name   = dist_name($module);
     my $readme      = $hash{readme} || $module_path;
 
+    my $clean = $hash{clean} && ref $hash{clean} ? $hash{clean}
+              : $hash{clean}                     ? [$hash{clean}]
+              : undef;
+
     my $caller = caller;
 
     if (defined \&{ $caller . "::engine" }) {
@@ -65,13 +69,14 @@ sub import {
 
     desc "run test cases";
     task test => 'Makefile' => sub {
+        local $ENV{HARNESS_OPTIONS} = "c" unless $ENV{HARNESS_OPTIONS};
         sh $MAKE, 'test';
     };
 
     desc "cleanup";
     task clean => 'Makefile' => sub {
         sh $MAKE, 'realclean';
-        sh "rm", "-rf", @{$hash{clean}} if $hash{clean};
+        sh "rm", "-rf", @{$clean} if $clean;
     };
 
     desc "regenerate README.md and META.json";
@@ -121,10 +126,7 @@ sub import {
 # taken from Minilla::Metadata
 sub _build_authors {
     my $path = shift;
-    my $content = do {
-        open my $fh, "<:utf8", $path or die "open $path: $!\n";
-        local $/; <$fh>;
-    };
+    my $content = slurp $path;
 
     if ($content =~ m/
         =head \d \s+ (?:authors?)\b \s*
